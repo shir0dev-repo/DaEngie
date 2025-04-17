@@ -7,7 +7,7 @@
 
 
 struct Renderable {
-	Renderable(MeshBuffer* meshBuffer, const Material* material, uint32_t objectCBIndex);
+	Renderable(MeshBuffer* meshBuffer, Material* material, uint32_t objectCBIndex);
 
 	DirectX::XMFLOAT4X4 Transform;
 	DirectX::XMFLOAT4X4 TexTransform;
