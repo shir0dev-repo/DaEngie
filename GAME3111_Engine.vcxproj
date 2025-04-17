@@ -135,25 +135,35 @@
   <ItemGroup>
     <ClInclude Include="D3D\DXContext.h" />
     <ClInclude Include="D3D\DXPipeline.h" />
-    <ClInclude Include="Debug\DXDebugLayer.h" />
+    <ClInclude Include="DXDebug\DXDebugLayer.h" />
     <ClInclude Include="Object\Material.h" />
     <ClInclude Include="Object\MeshBuffer.h" />
     <ClInclude Include="Object\MeshData.h" />
     <ClInclude Include="Object\Renderable.h" />
     <ClInclude Include="Object\Texture.h" />
+    <ClInclude Include="Rendering\FrameResource.h" />
     <ClInclude Include="Rendering\RenderBufferConstants.h" />
+    <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Support\ComPointer.h" />
     <ClInclude Include="Support\d3dx12.h" />
+    <ClInclude Include="Support\UploadBuffer.h" />
     <ClInclude Include="Support\Window.h" />
     <ClInclude Include="Support\WinInclude.h" />
+    <ClInclude Include="Utils\GeometryGenerator.h" />
+    <ClInclude Include="Utils\MathHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D\DXContext.cpp" />
     <ClCompile Include="D3D\DXPipeline.cpp" />
-    <ClCompile Include="Debug\DXDebugLayer.cpp" />
+    <ClCompile Include="DXDebug\DXDebugLayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\src\MeshBuffer.cpp" />
+    <ClCompile Include="Object\src\Renderable.cpp" />
+    <ClCompile Include="Rendering\FrameResource.cpp" />
+    <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Support\Window.cpp" />
+    <ClCompile Include="Utils\GeometryGenerator.cpp" />
+    <ClCompile Include="Utils\MathHelper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

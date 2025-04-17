@@ -3,6 +3,7 @@
 #include "../MeshData.h"
 #include <D3D/DXContext.h>
 #include <d3dcompiler.h>
+#include <Support/Window.h>
 
 MeshBuffer::MeshBuffer(
 	std::string name,
@@ -20,10 +21,10 @@ MeshBuffer::MeshBuffer(
 	this->VertexBufferByteSize = vBufferSize;
 	this->VertexByteStride = vBufferStride;
 	this->VertexCount = vCount;
-	memcpy(IndexBufferCPU->GetBufferPointer(), meshData.Indices.data(), vBufferSize);
+	memcpy(VertexBufferCPU->GetBufferPointer(), meshData.Indices.data(), vBufferSize);
 	VertexBufferGPU = CreateBuffer(vBufferSize, meshData.Vertices.data(), VertexBufferUploader);
 
-	//D3DCreateBlob(iBufferSize, &IndexBufferCPU);
+	D3DCreateBlob(iBufferSize, &IndexBufferCPU);
 	IndexBufferByteSize = iBufferSize;
 	IndexCount = iCount;
 	this->IndexFormat = DXGI_FORMAT_R32_UINT;
@@ -42,7 +43,7 @@ ComPointer<ID3D12Resource> MeshBuffer::CreateBuffer(UINT bufferSize, const void*
 		&buffer,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&uploader));
+		IID_PPV_ARGS(&defaultBuffer));
 
 	CD3DX12_HEAP_PROPERTIES uploadProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 	DXContext::Get().GetDevice()->CreateCommittedResource(
@@ -59,9 +60,9 @@ ComPointer<ID3D12Resource> MeshBuffer::CreateBuffer(UINT bufferSize, const void*
 	srData.SlicePitch = bufferSize;
 
 	CD3DX12_RESOURCE_BARRIER transition = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
-	UpdateSubresources<1>(DXContext::Get().GetCommandList(), defaultBuffer, uploader, 0, 0, 1, &srData);
+	UpdateSubresources<1>(DXWindow::Get().GetCommandList(), defaultBuffer, uploader, 0, 0, 1, &srData);
 	CD3DX12_RESOURCE_BARRIER transition2 = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
-	DXContext::Get().GetCommandList()->ResourceBarrier(1, &transition2);
+	DXWindow::Get().GetCommandList()->ResourceBarrier(1, &transition2);
 
 	return defaultBuffer;
 }

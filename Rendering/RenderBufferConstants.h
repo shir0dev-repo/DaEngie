@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <Utils/MathHelper.h>
 
 #define MaxLights 16
 
@@ -16,8 +17,8 @@ struct Light
 
 struct ObjectConstants
 {
-    DirectX::XMFLOAT4X4 World;
-    DirectX::XMFLOAT4X4 TexTransform;
+    DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4;
+    DirectX::XMFLOAT4X4 TexTransform = MathHelper::Identity4x4;
 };
 
 struct MaterialConstants
@@ -27,17 +28,17 @@ struct MaterialConstants
     float Roughness = 0.25f;
 
     // Used in texture mapping.
-    DirectX::XMFLOAT4X4 MatTransform;
+    DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4;
 };
 
 struct PassConstants
 {
-    DirectX::XMFLOAT4X4 View;
-    DirectX::XMFLOAT4X4 InvView;
-    DirectX::XMFLOAT4X4 Proj;
-    DirectX::XMFLOAT4X4 InvProj;
-    DirectX::XMFLOAT4X4 ViewProj;
-    DirectX::XMFLOAT4X4 InvViewProj;
+    DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4;
+    DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4;
+    DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4;
+    DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4;
+    DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4;
+    DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4;
     DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
     float cbPerObjectPad1 = 0.0f;
     DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };

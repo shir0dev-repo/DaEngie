@@ -6,6 +6,8 @@
 #include <cstdint>
 
 struct Vertex {
+	Vertex() = default;
+
 	Vertex(
 		const DirectX::XMFLOAT3& p, 
 		const DirectX::XMFLOAT3& n, 

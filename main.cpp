@@ -4,15 +4,18 @@
 #include <Support/ComPointer.h>
 #include <Support/Window.h>
 
-#include <Debug/DXDebugLayer.h>
+#include <DXDebug/DXDebugLayer.h>
 #include <D3D/DXContext.h>
+#include <D3D/DXPipeline.h>
+#include <Object/MeshData.h>
+#include <Utils/GeometryGenerator.h>
 
 int main() {
 	DXDebugLayer::Get().Init();
 
-	if (DXContext::Get().Init() && DXWindow::Get().Init()) {
+	if (DXContext::Get().Init() && DXWindow::Get().Init() && DXPipeline::Get().Init()) {
 
-		D3D12_HEAP_PROPERTIES hp{};
+		/*D3D12_HEAP_PROPERTIES hp{};
 		hp.Type = D3D12_HEAP_TYPE_UPLOAD;
 		hp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
 		hp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
@@ -32,41 +35,36 @@ int main() {
 		rd.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		rd.Flags = D3D12_RESOURCE_FLAG_NONE;
 		ComPointer<ID3D12Resource2> uploadBuffer;
-		DXContext::Get().GetDevice()->CreateCommittedResource(&hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&uploadBuffer));
+		DXContext::Get().GetDevice()->CreateCommittedResource(&hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&uploadBuffer));*/
 
-		D3D12_INPUT_ELEMENT_DESC vertexLayout[] = {
-			{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-		};
-
-		// === Pipeline State ===
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gfxPsod{};
-		gfxPsod.InputLayout.NumElements = _countof(vertexLayout);
-		gfxPsod.InputLayout.pInputElementDescs = vertexLayout;
-		gfxPsod.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
+		MeshData box = GeometryGenerator::CreateBox(1.f, 1.f, 1.f, 0);
+		Material mat = DXPipeline::Get().CreateMaterial("cum", 0, 0, 0, { 1.f, 1.f, 1.f, 1.f }, { 0.f, 0.f, 0.f }, 1.0f);
+		DXPipeline::Get().AddMesh(box, &mat, "cumBox");
+		
 		while (!DXWindow::Get().ShouldClose()) {
 			DXWindow::Get().Update();
 
 			if (DXWindow::Get().ShouldResize()) {
-				DXContext::Get().Flush(DXWindow::Get().GetFrameCount());
+				DXWindow::Get().Flush(DXWindow::Get().GetFrameCount());
 				DXWindow::Get().Resize();
 			}
 			// Begin drawing
-			auto* cmdList = DXContext::Get().InitCommandList();
+			DXWindow::Get().InitCommandList();
 			// Begin Frame
-			DXWindow::Get().BeginFrame(cmdList);
+			DXWindow::Get().BeginFrame();
 			// TODO: Draw Frame
-
+			DXPipeline::Get().DrawAllRenderables();
 			// EndFrame
-			DXWindow::Get().EndFrame(cmdList);
+			DXWindow::Get().EndFrame();
 
-			DXContext::Get().ExecuteCommandList();
+			DXWindow::Get().ExecuteCommandLists();
 			DXWindow::Get().Present();
 		}
 
-		DXContext::Get().Flush(DXWindow::Get().GetFrameCount());
-
+		DXWindow::Get().Flush(DXWindow::Get().GetFrameCount());
 		DXWindow::Get().Shutdown();
-		//DXContext::Get().Shutdown();
+		DXContext::Get().Shutdown();
+		DXPipeline::Get().Shutdown();
 	}
 
 	
